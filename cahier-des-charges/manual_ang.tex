@@ -1,0 +1,131 @@
+
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\frenchspacing
+\author{KostiTeam}
+\title{User Manual for LXC}
+\begin{document}
+
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{The Beginning}
+All commands used are launched/done as root
+
+\subsection{Install LXC}
+\subsubsection{Arch-linux}
+\emph{\#pacman -S lxc arch-install-scripts}
+\subsubsection{Debian}
+\emph{\#apt-get install lxc}
+
+\subsection{Create a container}
+\emph{\#lxc-create -t download -n cntName}: create a container which name is \emph{cntName}, 
+by displaying a list, where the user can choose the OS he wants for the container.\\ 
+
+\emph{\#lxc-create -t download -n cntName -- -d debian -r jessie -a i386}: create the \emph{cntName} container, 
+by downloading an OS of \emph{debian} distribution, \emph{jessie} release, and \emph{i386} architecture
+(32 bits).\footnote{create a container which has a 64 bits architecture on a 32 bits host computer \textbf{dosen't work}.}\\
+
+\emph{\#lxc-ls}: display the list of all the created containers; --fancy for more details.\\
+  
+\subsection{Start a container}
+\emph{\#lxc-start -n cntName  -d}: Start the \emph{cntName} container in daemon mode \emph{(-d)}.\\
+By default, there isn't any user's account. So, it is necessary to connect as root.\\
+
+\emph{\#lxc-attach -n cntName}: connect as root to the \emph{cntName} Container.\\
+Once an user's account is created, and the container launched, it is possible to launch a terminal on a session\\
+
+\emph{\#lxc-console -n cntName -t 0}: open a login screen on the \emph{tty0} terminal of the \emph{cntName} 
+container.\footnote{\textbf{BUG:} on some OS, -t \textbf{must} be equal to 0}\\
+Or, if the container is stopped, it is also possible to launch a container on a login screen by taking off the \emph{-d} to the lxc-start command.
+
+\subsection{Configure a container}
+\subsubsection{configuration file}
+A container's configuration file can be found at /var/lib/lxc/\emph{<container name>}/config.\\
+Here is a gateway configuration example:\\
+\emph{RTFM: lxc.container.conf}\\
+
+\noindent
+\textbf{/var/lib/lxc/passerelle/config}\\
+
+\noindent
+\# Distribution configuration\\
+lxc.include = /usr/share/lxc/config/debian.common.conf\\
+lxc.arch = x86\_64\\
+
+\noindent
+\# Container specific configuration\\
+lxc.rootfs = /var/lib/lxc/passerelle/rootfs\\
+lxc.rootfs.backend = dir\\
+lxc.utsname = passerelle\\
+
+\noindent
+\# Network configuration\\
+lxc.network.type = veth\\
+lxc.network.name = eth0\\
+lxc.network.link = lxcbr0\\
+lxc.network.flags = up\\
+lxc.network.hwaddr = 00:16:3e:5b:0e:8f\\
+lxc.network.ipv4 = 172.16.1.1\\
+lxc.network.ipv6 = fec00:0:0:2::1\\
+
+\noindent
+lxc.network.type = veth\\
+lxc.network.name = eth1\\
+lxc.network.link = lxcbr0\\
+lxc.network.flags = up\\
+lxc.network.hwaddr = 00:16:3e:5b:0e:8f\\
+lxc.network.ipv4 = 192.168.1.1/24\\
+lxc.network.ipv6 = fc00:0:0:1::1/64\\
+
+Here, the container has two interfaces (eth0 and eth1); each one has its own ipv4 (\emph{lxc.network.ipv4}), ipv6(\emph{lxc.network.ipv6}),
+and MAC(\emph{lxc.network.hwaddr}) adresses.\\
+\emph{lxc.network.flags} indicate what to do with the interface (\emph{up} activate the interface.).\\
+\emph{lxc.network.type} indicate the type of network virtualisation to use (RTFM).\\
+\emph{lxc.network.link} indicate the bridge to use for the package trafic between containers, this will be explained later.\\
+
+\subsubsection{ifconfig, ip}
+
+***IP commands/ifconfig for ipv4,ipv6***
+
+\subsection{Join containers with bridges}
+
+To join the continers to other containers, or to the host, LXC uses bridges. When a container is launched,
+each "virtual" interfaces of the container will create an interface on the host. Join those interfaces
+to a same bridge will allow to comunicate between severals interfaces (if there is a proper network configuration)
+
+\subsubsection{The "manual" method}
+
+After launching the containers, it is possible to connect them with the bridges:
+
+\noindent
+\emph{\#brctl addbr br0}: create a bridge which name is \emph{br0}\\
+\emph{\#ifconfig br0 up}: activate the \emph{br0} interface\\
+\emph{\#brctl addif br0 VETH12345}: Join the \emph{br0} bridge and the \emph{VETH12345} physical interface\footnote{See also the other doc to have more details}\\
+
+\subsubsection{The automatic method}
+
+It is also possible to join containers by the configuration file.\footnote{\textbf{Warning : }the bridge \textbf{must} be created manually, it can't be created with the config file.}
+Be carefull, if you tried to launch a container, which depends on a bridge which is not created, it will return an error.
+
+\noindent
+\emph{\#lxc.network.link} allow an interface to connect to a specific bridge.\\
+
+Exemple:\\
+\noindent
+lxc.network.type = veth\\
+lxc.network.name = eth1\\
+lxc.network.link = lxcbr0\\
+lxc.network.flags = up\\
+lxc.network.hwaddr = 00:16:3e:5b:0e:8f\\
+lxc.network.ipv4 = 192.168.1.1\\
+lxc.network.ipv6 = fc00:0:0:1::1\\
+
+\noindent
+the \emph{eth1} interface will be connected to the \emph{lxcbr0} bridge.
+
+
+\end{document}

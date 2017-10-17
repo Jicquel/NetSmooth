@@ -1,0 +1,84 @@
+\subsection{Scénarios}
+
+\subsubsection{Premier cas}
+
+\noindent\textbf{TITRE}: Créer une machine virtuelle.\\
+\textbf{OBJECTIF}: Pouvoir créer une machine pour l’utiliser dans un réseau.\\
+\textbf{ACTEURS}: L’utilisateur.\\
+\textbf{TYPE}: Scénario nominale.\\
+\textbf{PRECONDITIONS}: Il faut avoir lancé le logiciel.\\
+\textbf{POSTCONDITIONS}: La machine est créée.\\
+\textbf{DESCRIPTIF}:\\ 
+\indent1. L’utilisateur clique sur l’icône de la machine.\\
+\indent2. L’utilisateur déplace l’icône sur la zone qui représente le réseau.\\
+\indent3. L’utilisateur saisit l’adresse IP4 et/ou IP6 de la machine.\\
+\indent4. L’utilisateur saisit le masque 4 et/ou 6 de la machine.\\
+\indent5. L’utilisateur veut définir des paramètres de routages.\\
+\indent6. L’utilisateur saisit l’adresse destination en IP4/IP6.\\	
+\indent7. L'utilisateur saisit l'adresse de la passerelle en IP4/IP6\\
+\indent8. L’utilisateur saisi l’interface qu’il veut utiliser.\\
+\textbf{FLUX ALTERNATIFS:}
+\indent5. L'utilisateur ne veut pas définir des paramètres de routage.\\
+\indent\indent5a. L'utilisateur laisse les champs vides.\\
+\textbf{CAS REFERENCES}: aucun.\\
+
+\subsubsection{Deuxième cas}
+\noindent\textbf{TITRE}: Créer une passerelle.\\
+\textbf{OBJECTIF}: Pouvoir créer une passerelle et l’utiliser dans le réseau.\\
+\textbf{ACTEURS}: L’utilisateur.\\
+\textbf{TYPE}: Scénario nominale.\\
+\textbf{PRECONDITIONS}: Avoir lancé le logiciel.\\
+\textbf{POSTCONDITIONS}: La passerelle est créée.\\
+\textbf{DESCRIPTIF}:\\
+\indent1. L’utilisateur clique sur l’icône de la passerelle.\\
+\indent2. L’utilisateur déplace l’icône sur la zone qui représente le réseau.\\
+\indent3. L’utilisateur choisi le nombre d’interfaces qu’il veut.\\
+\indent4. L’utilisateur saisi l’adresse IP4 et/ou IP6 de la passerelle pour toutes ses interfaces.\\
+\indent5. L’utilisateur saisi le masque 4 et/ou 6 de la passerelle pour toutes ses interfaces.\\
+\indent6. L’utilisateur veut définir des paramètres de routages.\\
+\indent7. L’utilisateur saisi l’adresse destination en IP4/IP6.\\
+\indent8. L’utilisateur saisi l’adresse de la passerelle en IP4/IP6.\\
+\indent9. L’utilisateur saisi l’interface qu’il veut utiliser.\\
+\textbf{FLUX ALTERNATIFS}:\\
+\indent5. L'utilisateur ne veut pas définir des paramètres de routage.\\
+\indent\indent5a. L'utilisateur laisse les champs vides.\\
+\textbf{CAS REFERENCES}: aucun.\\
+
+
+\subsubsection{Troisième cas}
+\noindent\textbf{TITRE}: Créer un hub.\\
+\textbf{OBJECTIF}: Pouvoir créer un hub pour l’utiliser dans un réseau.\\
+\textbf{ACTEURS}: L’utilisateur.\\
+\textbf{TYPE}: Scénario nominale.\\
+\textbf{PRECONDITIONS}: Il faut avoir lancé le logiciel.\\
+\textbf{POSTCONDITIONS}: Le hub est créé.\\
+\textbf{DESCRIPTIF}: 
+\indent1. L’utilisateur clique sur l’icône du hub.\\
+\indent2. L’utilisateur déplace l’icône sur la zone qui représente le réseau.\\
+\textbf{CAS REFERENCES}: aucun.\\
+
+
+
+\subsubsection{Quatrième cas}
+\noindent\textbf{TITRE}: Relier une machine à une machine/hub/passerelle.\\
+\textbf{OBJECTIF}: Pouvoir relier une machine avec un autre dispositif pour qu’il puisse se « voir» dans le réseau.\\
+\textbf{ACTEURS}: L’utilisateur.\\
+\textbf{TYPE}: Scénario nominale.\\
+\textbf{PRECONDITIONS}: Il faut avoir lancé le logiciel, créée une machine et un autre dispositif.\\
+\textbf{POSTCONDITIONS}: La machine est reliée avec l’autre dispositif.\\
+\textbf{DESCRIPTIF}: \\
+\indent1. L’utilisateur clique sur l’icône du câble.\\
+\indent2. L’utilisateur déplace l’icône sur la machine à relié.\\
+\indent3. L’utilisateur clique sur le dispositif auquel il veut relier la machine.\\
+\textbf{CAS REFERENCES}: aucun.\\
+
+\subsubsection{Cinquième cas}
+\noindent\textbf{TITRE}: Allumer un dispositif.\\
+\textbf{OBJECTIF}: Pouvoir allumer un dispositif pour qu’il soit visible sur le réseau.\\
+\textbf{ACTEURS}: L’utilisateur.\\
+\textbf{TYPE}: Scénario nominale.\\
+\textbf{PRECONDITIONS}: Il faut avoir lancé le logiciel, et créer un dispositif.\\
+\textbf{POSTCONDITIONS}: Le dispositif est allumé.\\
+\textbf{DESCRIPTIF}:\\
+\indent1. L’utilisateur clique sur l’icône on/off.\\
+\textbf{CAS REFERENCES}: aucun.\\

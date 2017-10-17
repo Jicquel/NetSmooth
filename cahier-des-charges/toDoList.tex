@@ -1,0 +1,50 @@
+\documentclass[a4paper]{article}
+\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\frenchspacing
+\author{KostiTeam}
+\title{Liste des tâches}
+
+\setcounter{secnumdepth}{4}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Interface graphique}
+
+\begin{itemize}
+\item Créer les quatres éléments de la vue (barre de sélection,menu,écran central, informations de la sélection),
+\item double clic sur la barre de sélection verrouille le choix,
+\item clic simple sur un élément affiche ses caractéristiques en haut à droite,
+\item double clic sur une machine démarre une console,
+\item glisser un élément de la barre de sélection jusqu'à l'écran principal ajoute l'élément.
+\item bouton sur chaque machine pour l'éteindre ou la démarrer.
+\end{itemize}
+
+\section{Le "background"}
+\subsection{Machines}
+\begin{itemize}
+\item changer la configuration d'un élément hors tension => changer son fichier de configuration,
+\item changer la configuration d'un élément sous tension => changer fichier de configuration et les config actuelles (ifconfig,ip...). 
+\item 
+\end{itemize}
+
+\subsection{Cables}
+\begin{itemize}
+\item Simuler le comportement des cables avec les bridges => déconnecter du bridge si pas cablé.
+\end{itemize}
+
+\subsection{Format de sauvegarde}
+Créer notre propre format de sauvegarde pour réussir à sauvegarder : 
+\begin{itemize}
+\item les positions de chaque élément,
+\item la configuration de chaque élément => fichiers et configuration actuelle pour machines (routes ...),
+machines concernées par un cablage pour les cables.
+\end{itemize}
+
+\end{document}

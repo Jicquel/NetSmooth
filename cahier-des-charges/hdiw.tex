@@ -1,0 +1,62 @@
+
+\subsubsection{Les containers, leur fonctionnement}
+
+Les environnements virtuels, ou, containers (conteneurs en francais)  doivent, en premier temps, \^etre cr\'e\'es
+\`a l'aide de la commande "\emph{lxc-create ...}" (voir notices pour plus de pr\'ecisions sur les commandes). De
+nombreux syst\`emes d'exploitation seront alors propos\'es, (nous avons choisi de prendre Debian, Jessie,
+i386). Par d\'efaut, les machines cr\'e\'ees ne sont pas configur\'ees: elles n'ont pas d'interfaces, elles 
+n'ont pas de compilateur, et les utilitaires pr\'einstall\'es sont tr\`es rudimentaire 
+(pas de ping, ifconfig, tcpdump...).\\
+
+Chaque container poss\`ede un fichier de configuration situ\'e \`a l'emplacement suivant: "\emph{/var/lib/lxc/<nom 
+du container>/config}". Il est possible de configurer de nombreux aspect du container dans ce fichier 
+(par exemple: modifier les variables d'environnement, ou changer le nom d'h\^ote ("\emph{hostname}") du 
+container. Voir "\emph{man lxc}" pour en savoir plus). Ce fichier va notamment permettre de param\'etrer la 
+configuration r\'eseau du container \`a son d\'emarrage (c'est ce qui va nous int\'eresser en priorit\'e avec 
+ce fichier).\\
+
+Les containers se lancent avec la commande "\emph{lxc-start ...}"; il est pr\'ef\'erable de les lancer en d\'emons
+(en arri\`ere-plan), puis d'y "\emph{attacher}" un terminal avec "\emph{lxc-attach}", afin d'\^etre connect\'e
+en super utilisateur (ou root) car, premi\`erement, par d\'efaut, aucun profil d'utilisateur n'est cr\'e\'e sur 
+le container, et, de plus, cela permet d'avoir l'entier contr\^ole du container afin de, par exemple, modifier 
+son adresse ipv4.\\
+
+
+\subsubsection{Bridges et fonctionnement r\'eseau}
+\paragraph{fichier de configuration}~\\
+
+Comme expliqu\'e plus haut, les param\`etres r\'eseaux du container peuvent \^etre modifi\'es via le fichier config.
+Dans ce fichier, chaque "\emph{block}" permet de d\'efinir une interface. Un block commence toujours par la 
+d\'efinition du type de r\'eseau, nous allons donc nous int\'eresser tout d'abord au type de r\'eseau
+("\emph{lxc.network.type}").
+Plusieurs types de r\'eseaux sont disponibles, mais, nous allons choisir le type veth, qui signifie Virtual 
+Ethernet, ce type permet d'\'etablir un lien entre l'interface virtuelle du container et un pont, pr\'ealablement
+cr\'e\'e sur la machine host (nous verrons cette liaison plus en d\'etail par la suite).\\
+
+Ce fichier permet aussi d'\'etablir des adresses ipv4 ("\emph{lxc.network.ipv4}"), ipv6 ("\emph{lxc.network.ipv6}"),
+et mac ("\emph{lxc.network.hwaddr}"), ainsi que leurs Broadcast. Cela permet de mettre en place le r\'eseau 
+virtuel avant de lancer les machines; bien que ces param\`etres puissent \^etre modifi\'es une fois la machine
+lanc\'ee \`a l'aide de l'outil "\emph{ifconfig}". Attention, les tables de routage ne peuvent pas \^etre
+configur\'ees d'avance, il faut les configurer une fois le VE lanc\'e.\\
+
+Le dernier param\`etre que nous verrons pour ce fichier est le lien ("\emph{lxc.network.link}"); ce param\`etre
+va permettre d'indiquer \`a quel bridge nous voulons connecter notre interface.\\
+
+\paragraph{Bridges}~\\
+
+Les bridges (ou pont en francais) sont des \'equipements r\'eseaux qui permettent de relier deux (ou plus)
+interfaces de mani\`ere compl\`etement transparente: en observant les paquets qui transitent, le pont peut 
+connaitre les adresses mac des interfaces, et ainsi, rediriger les paquets. Les ponts peuvent par exemple,
+\^etre utilis\'es pour rediriger une connexion Ethernet: une machine se connecte en Ethernet, une seconde 
+machine se connecte \`a la premi\`ere, elles \'etablissent un pont entre deux de leurs interfaces (une interface
+de la premi\`ere machine, et une interface de la deuxi\`eme machine), et, ainsi, la deuxi\`eme machine peut 
+avoir acc\`es \`a internet.\\
+
+Lorsqu'un VE se lance, une interface se cr\'e\'e sur la machine h\^ote pour chaque interface pr\'esente sur le VE.
+Ces interfaces cr\'e\'ees ont un noms qui commencent toujours par "\emph{VETH}" suivit de quatre caract\`eres. Ces
+interfaces sur la machine h\^ote representent les interfaces de l'environement virtuels, et vons nous permettre des
+reliers les environnements entre eux; il est possible de voir la correspondance entre les interfaces d'un container
+et les interfaces de la machine h\^ote grace a la commande "\emph{lxc-info ...}".\\
+
+Il est donc necessaire de relier ces interfaces sur la machine h\^ote a un m\^eme bridge pour que les 
+containers puissent communiquer!

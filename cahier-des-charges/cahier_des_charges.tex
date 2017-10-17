@@ -1,0 +1,143 @@
+%        File: cahier_des_charges.tex
+%     Created: sam. oct. 22 06:00  2016 C
+% Last Change: sam. oct. 22 06:00  2016 C
+%
+\documentclass[a4paper]{article}
+\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{lscape}
+\usepackage{rotating}
+\usepackage{epstopdf}
+%\usepackage{kmath,kerkis,fourier}
+%\selectfont
+\setlength{\hoffset}{0pt}
+\setlength{\oddsidemargin}{0pt}
+\setlength{\footskip}{0pt}
+\setlength{\textwidth}{455pt}
+
+
+\frenchspacing
+\author{KostiTeam}
+\title{Cahier des charges}
+
+\setcounter{secnumdepth}{4}
+
+\begin{document}
+
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Probl\'ematique}
+La virtualisation est le fait de cr\'eer une version virtuelle d'une entit\'e physique, ces versions virtuelles
+sont alors appel\'ees Machines virtuelles ou VM (Virtual Machine). Nous pouvons prendre comme exemple Virtual
+Box, qui est un outil de virtualisation permettant d'\'emuler un syst\`eme d'exploitation (linux ou autre).
+Les diff\'erentes ressources de la machine h\^ote sont alors partag\'ees et allou\'ees dynamiquement aux
+diff\'erentes machines virtuelles par des logiciels appel\'es hyperviseur.\\
+
+La virtualisation peut \^etre utile dans diverses situations. En effet, virtualiser permet de tester un environnement afin de trouver ses meilleurs caractéristiques avant de le créer. De plus, la virtualisation peut être utilisée à des fins pédagogiques. Dans le cadre d'\'etudes informatiques, il peut
+\^etre pratique de simuler des r\'eseaux dans lesquels des machines dialoguent. Marionnet est un exemple de
+logiciel de simulation de r\'eseaux. 
+
+\subsection {Marionnet}
+Marionnet est un simulateur de réseau. Voici un exemple d'utilisation : 
+On souhaite simuler un réseau constitué de 2 sous-réseaux. Chaque sous-réseau contient 3 machines.
+On relie donc chaque groupe de 3 machines avec un hub, puis les deux sous-réseaux avec une passerelle (gateway).
+
+On peut ensuite configurer les tables de routage, les adresses ipv4, ipv6 etc. pour simuler des échanges entre les machines.
+
+Cependant, apr\`es avoir utiliser un tant soit peu Marionnet, il s'av\`ere que
+plusieurs d\'efauts g\^enent son utilisation : 
+\begin{itemize}
+  \item crashs assez fr\'equents;
+  \item impossible de changer les configurations des machines en marche;
+  \item processus d'arr\^et des machines trop fastidieux;
+  \item interface peu ergonomique;
+  \item logiciel trop gourmand en ressources.
+\end{itemize}
+
+
+Face à ces probl\`emes, nous avons donc d\'ecid\'e de cr\'eer un nouveau simulateur de r\'eseaux.
+
+\section{Solution}
+Pour pallier les probl\`emes expos\'es pr\'ecedemment, il nous semble pertinent de ne pas virtualiser les
+machines utilis\'ees  (VM) mais uniquement les environnements (VE).\\
+
+Les VM ont un d\'efaut pour nous: elles simulent tout le materiel d'une machine (processeur, RAM...).
+Nous prefererons donc utiliser des VE (Virtual Environement). Les VE permettent de ne simuler que le
+systeme d'exploitation, et de partager le m\^eme noyeau que la machine h\^ote, et donc, de r\'epartir les
+ressources entre machine h\^ote et les differents environnements virtuels. Cette solution répond donc
+à nos besoins : un gain notable de performance, notamment lorsque le nombre de machines est
+important.\\
+
+Pour virtualiser les environnements, nous avons choisi d'utiliser la technologie de LXC.
+
+\section{LXC}
+\subsection{D\'efinition}
+
+LXC est un outil de virtualisation permettant de cr\'eer des environnements virtuels, diff\'erents systemes
+d'exploitations sont mis a disposition (Ubuntu, Debian...). Ces Environnements sont appel\'ees containers. Le
+partage des ressources est assur\'e par l'outil Cgroups du noyau, qui permet de limiter, compter et
+isoler l'utilisation des ressources.\\
+
+Chaque environnement virtuel est isol\'ee, de la m\^eme mani\`ere que l'isolement d'un programme 
+avec "\emph{chroot}": chaque environnement est cr\'e\'e de mani\`ere \`a ce qu'ils naient pas acc\`es au syst\`eme 
+d'exploitation de la machine h\^ote. En revanche, la machine h\^ote, elle, a acc\`es aux machines virtuelles.
+Cette isolation entre les machines virtuelles et la machine h\^ote, permet de garantir une certaine s\'ecurit\'e.\\
+
+\subsection{Pourquoi LXC ?}
+
+LXC poss\`ede sa propre API, notamment en C/C++, ce qui nous permet de l'int\'egrer ) notre projet efficacement.
+Il est plus l\'eger que des technologies comme Docker (qui h\'erite de LXC) et convient \`a notre utilisation.
+
+\subsection{Fonctionnement de LXC}
+\input{hdiw.tex}
+\section{Langage et autres outils utilisés}
+Les principaux langages utilisés seront : 
+\begin{itemize}
+  \item Le C++, car c'est un langage orienté objet compatible avec l'API C de LXC;
+  \item Le langage shell pour utiliser des fonctions telles que la gestion des bridges (brctl).
+\end{itemize}
+
+Pour créer l'interface graphique, nous utiliserons l'API Qt. En effet, cette dernière nous semble être de qualité, et QtCreator rend la compilation plus pratique.
+
+\newpage
+\section{Architecture du programme}
+\subsection{Vues}
+Le logiciel a une seule interface : 
+\begin{center}
+\includegraphics[scale=0.25]{bulto.png}
+\end{center}
+Elle est divisible en 4 parties : 
+\begin{itemize}
+\item La barre supérieure (Fichier, Éditions, Aide...),
+\item la barre de sélection (à gauche) où on peut choisir quel entité ajouter,
+\item l'écran principal (au centre),
+\item la barre d'information (à droite) où sont affichées les configurations des entités sélectionnées.
+\end{itemize}
+
+Voici un exemple avec un ping entre deux machines capturé avec tcpdump :
+\vspace{16\baselineskip}
+\begin{center}
+\includegraphics[scale=0.25]{exemple_netsmooth.png}
+\end{center}
+
+
+\section{Etapes pr\'evues}
+Voici un diagramme de Gantt qui décrit les étapes et l'avancement actuel du projet :\\
+\includegraphics[scale=0.35]{gantt3.png}
+
+\section{Notice d'utilisation de LXC}
+\input{manual.tex}
+
+\newpage
+\section{Annexe}
+\input{diagrammes.tex}
+\input{scenarios.tex}
+\end{document}
+
+

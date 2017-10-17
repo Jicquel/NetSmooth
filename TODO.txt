@@ -1,0 +1,87 @@
+
+######################
+####### TODO #########
+######################
+
+
+[ ] rafraichir la vueInformation automatiquement des que besoin
+
+[ ] gerer les cables quand machines allumées
+
+[ ] Vider les routes et ip dans chaque container à la fin de chaque utilisation de NetSmooth
+
+[ ] modifier les formats de sauvegardes pour du XML 
+	(car + simple a gérer, a écrire, a lire, et des bibliotheques C++ doivent déja exister pour rédiger du XML)
+
+[ ] Refaire les dépendences
+
+[ ] Supprimer VuePasserelleControleur et tout mettre sous VueMachineControleur
+
+[ ] Créer vueOrdinateur et vue machine comme diagramme
+
+[ ] Préciser Shadow build path
+
+[ ] Snapshot
+
+[ ] La fonction start de lxc ne fonctionne pas (Machine.cpp)
+
+[ ] Changer nom selection en vueSelection
+
+[ ] changer la vueprincipale en un qgraphicsview
+
+[ ] bouton pour tout allumer/eteindre
+
+[ ] algo cables A*, Lee
+
+[ ] remix design (mettre du foncé!!!)
+
+
+
+
+
+
+
+[~] modification des param routage & ip dans xterm container = modification sur onglet netsmooth
+
+
+
+
+[X ] refaire Algo cable/bridge (1 bridge par cable?)
+	-> ajouter une notion de ports, l'utilisateur peut choisir si il branche le cable sur eth0 ou eth1
+		-> ajouter ca a fichiers de sauvegarde
+	-> enlever bridgeActuel et bridgeInit.
+	-> il n'y a plus de question d'entitée prioritaires
+
+un cable est forcément relié a un HUB.
+
+Un cable a juste un nom de bridge,une entité (et son port) en attributs ET un booleen qui dit si le bridge est défini
+pas besoin de parler de ports dans la classe Machine, l'info dans cable nous suffit.
+
+[X] suppression cables
+
+[X] prendre en compte le mot "default" dans script alias route
+
+[X] resoudre bug cable PC baptiste
+
+[X] ajouter les noms des machines aux fichiers de sauvegarde
+
+[X] finir configuration ipv6 (modif container = modif onglet, et vis versa)
+
+[X] zoom a finir
+
+[X] cables
+
+[X] sauvegarde (nom de fichier + correction position machines)
+
+[X] nom des machines
+
+[X] ajouter interfaces sur les containers passerelles
+
+[X] changer le bouton allumer 
+
+[X] gerer ipv6
+
+[X] resoudre bug:
+	on peut plus allumer 2 fois Xterm si on a mis des parametres IP
+	(ca lance des zombies, tout est lié?)
+	si, apres qu'on ai bloqué le container, on essaye de faire un lxc-attach, on a un message d'erreur
