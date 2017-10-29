@@ -5,7 +5,6 @@ nombre_passerelle=5
 home=""
 if [ $# -eq 1 ]; then
 	home=$1
-	action=$1
 else
 	echo "exe <path home like /home/user > or only exe <path home like /home/user>"
 	exit
@@ -73,7 +72,7 @@ for i in $list; do
 	echo "if [ \"\$(expr match \"\$list\" '.*-6')\" != \"0\" ] && [ \"\$(expr match \"\$list\" '.*:')\" != \"0\" ]; then" >> $path/aliasIp.sh
 	echo "	a=\$(echo \$(expr match \"\$list\" '.*eth'))" >> $path/aliasIp.sh
 	echo "	interface=eth\${list:a:1}" >> $path/aliasIp.sh
-	echo "	ipv6=\$(/sbin/ifconfig \$interface | grep 'inet6' | sed 's/^.*inet6.* \\([0-9a-f:/]*\\) .*\$/\1/' ) " >> $path/aliasIp.sh
+	echo "	ipv6=\$(/sbin/ip addr show \$interface | grep inet6 | sed 's/^.*inet6 \\([0-9a-f:/]*\\) .*\$/\\1/') " >> $path/aliasIp.sh
 	echo "	if [ \"\$ipv6\" != \"\" ]; then" >> $path/aliasIp.sh
 	echo "		/sbin/ifconfig \$interface del \$ipv6" >> $path/aliasIp.sh
 	echo "	fi" >> $path/aliasIp.sh
@@ -84,17 +83,14 @@ for i in $list; do
 	echo "/.scr/majRoute6Config.sh" >> $path/aliasIp.sh
 
 	#
-	# aliasIpconfig
+	# aliasIfconfig
 	#
 	echo "#!/bin/bash" >> $path/aliasIfconfig.sh
 	echo "list=\$@" >> $path/aliasIfconfig.sh
 	echo "if [ \"\$(expr match \"\$list\" '.*add')\" != \"0\" ] && [ \"\$(expr match \"\$list\" '.*:')\" != \"0\" ]; then" >> $path/aliasIfconfig.sh
 	echo "	a=\$(echo \$(expr match \"\$list\" '.*eth'))" >> $path/aliasIfconfig.sh
 	echo "	interface=eth\${list:a:1}" >> $path/aliasIfconfig.sh
-	echo "	ipv6=\$(/sbin/ifconfig \$interface | grep 'inet6' | sed 's/^.*inet6[^0-9a-f]*\\([0-9a-f:/]*\\).*\$/\1/' )" >> $path/aliasIfconfig.sh
-	echo "  if [ \"\$(echo \$ipv6 | grep '/')\" = \"\" ]; then" >> $path/aliasIfconfig.sh
-	echo "  	ipv6=\$ipv6\$(/sbin/ifconfig \$interface | grep 'inet6' | sed 's/^.*prefixlen[^0-9]*\\([0-9]*\\).*\$/\1/')" >> $path/aliasIfconfig.sh
-	echo "  fi" >> $path/aliasIfconfig.sh
+	echo "	ipv6=\$(/sbin/ip addr show \$interface | grep inet6 | sed 's/^.*inet6 \\([0-9a-f:/]*\\) .*$/\\1/') " >> $path/aliasIfconfig.sh
 	echo "	if [ \"\$ipv6\" != \"\" ]; then" >> $path/aliasIfconfig.sh
 	echo "		/sbin/ifconfig \$interface del \$ipv6" >> $path/aliasIfconfig.sh
 	echo "	fi" >> $path/aliasIfconfig.sh
@@ -156,10 +152,25 @@ for i in $list; do
 	echo "listIfaces=\$(ls /sys/class/net)" >> $path/majIpconfig.sh
 	echo "for iface in \$listIfaces; do" >> $path/majIpconfig.sh
 	echo "	echo \$iface >> /.networkInfo/ipConfig.info	#interface" >> $path/majIpconfig.sh
-	echo "	echo \$(/sbin/ifconfig \$iface | grep -w inet | sed 's/^.*inet[^0-9]*\\([0-9.]*\\).*\$/\1/') >> /.networkInfo/ipConfig.info	#ipv4" >> $path/majIpconfig.sh
-	echo "	echo \$(/sbin/ifconfig \$iface | grep -w inet | sed 's/^.*netmask[^0-9]*\\([0-9.]*\\).*\$/\1/') >> /.networkInfo/ipConfig.info	#mask" >> $path/majIpconfig.sh
+
+	echo "	echo \$(/sbin/ip addr show \$iface | grep 'inet ' | sed 's/^.*inet \\([0-9.]*\\).*\$/\\1/') >> /.networkInfo/ipConfig.info	#ipv4" >> $path/majIpconfig.sh
+
+
+
+
+	echo "	mask=\$(/sbin/ip addr show \$iface | grep 'inet ' | sed 's/^.*inet [0-9.]*\/\([0-9]*\) .*\$/\1/')" >> $path/majIpconfig.sh
+	echo "	d=\$((mask/8))" >> $path/majIpconfig.sh
+	echo "	r=\$((\$mask-\$d*8))" >> $path/majIpconfig.sh
+	echo "	i=0" >> $path/majIpconfig.sh
+  echo "  maskL=" >> $path/majIpconfig.sh
+	echo "	while [ \$i -lt \$d ]; do i=\$((i+1)); maskL=\$(echo \"\$maskL\"255.) ; done" >> $path/majIpconfig.sh
+	echo "	maskL=\$maskL\$((256-2**(8-\$r)))" >> $path/majIpconfig.sh
+	echo "	i=\$((i+1))" >> $path/majIpconfig.sh
+	echo "	while [ \$i -lt 4 ]; do i=\$((i+1)); maskL=\$(echo \"\$maskL\".0) ; done" >> $path/majIpconfig.sh
+
+	echo "	echo \$maskL >> /.networkInfo/ipConfig.info	#mask" >> $path/majIpconfig.sh
 	
-	echo "	ipv6=\$(/sbin/ifconfig \$iface | grep 'inet6' | sed 's/^.*inet6.* \\([0-9a-f:/]*\\) .*\$/\1/' ) " >> $path/majIpconfig.sh
+	echo "	ipv6=\$(/sbin/ip addr show \$iface | grep inet6 | sed 's/^.*inet6 \\([0-9a-f:/]*\\) .*\$/\\1/') " >> $path/majIpconfig.sh
 	echo "	if [ \"\$(echo \$ipv6 | grep '/')\" = \"\" ]; then" >> $path/majIpconfig.sh
 	echo "		ipv6=\$ipv6\$(/sbin/ifconfig \$iface | grep 'inet6' | sed 's/^.*prefixlen[^0-9]*\\([0-9]*\\).*\$/\1/') " >> $path/majIpconfig.sh
 	echo "	fi" >> $path/majIpconfig.sh
