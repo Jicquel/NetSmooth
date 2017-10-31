@@ -90,14 +90,14 @@ if not, you will have to clone or rebuild the kernel.
   If you want to have an executable, for example *ping* or *tcpdump* in a container. You will have to copy it into the file system of the container.  
                                                        
   To copy a privileged executable in containers, like *ifconfig* :  
-
-  
+   
+    
   sudo cp /sbin/ifconfig ... baptiste
 
 
   To copy a non-privileged executable in containers, like *vim* :  
-
   
+   
   sudo cp /bin/vim ... baptiste
 
 ## Execution
@@ -108,3 +108,8 @@ if not, you will have to clone or rebuild the kernel.
 ### Unprivileged version
 
 	~/NetSmooth/src/NetSmoothMVC/NetSmooth	
+
+
+## Resources
+
+  Images and scripts used by the software are located in /usr/share/NetSmooth/ 

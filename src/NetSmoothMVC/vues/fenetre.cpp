@@ -228,8 +228,6 @@ void Fenetre::closeEvent(QCloseEvent *e)
 
 QString Fenetre::getImagesPath()
 {
-        QString path = QCoreApplication::applicationDirPath();
-        //path.remove("build-NetSmoothMVC-Desktop-Debug");
-        path = path+"/images/";
+        QString path = "/usr/share/NetSmooth/images/";
         return path;
 }

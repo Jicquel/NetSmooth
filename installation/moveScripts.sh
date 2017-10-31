@@ -19,3 +19,5 @@ for i in $list;do
   `cp ../src/NetSmoothMVC/scripts/$i /usr/share/NetSmooth/scripts/$i`
 done
 
+`cp -r ../src/NetSmoothMVC/images /usr/share/NetSmooth`
+
