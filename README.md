@@ -28,7 +28,7 @@
 
 ### Installation for an unprivileged utilisation
 #### WARNING 
-Command with *sudo* **MUST** executed with *sudo*. Command with *su* **MUST** also be executed with *su*.  
+Command with *sudo* **MUST** be executed with *sudo*. Command with *su* **MUST** also be executed with *su*.  
 If you don't have the permissions to write in a file, use chmod to change permissions.   
 
 Create the directory ~/.config/lxc if it doesn't exist.
@@ -92,13 +92,14 @@ if not, you will have to clone or rebuild the kernel.
   To copy a privileged executable in containers, like *ifconfig* :  
    
     
-  sudo cp /sbin/ifconfig ... baptiste
+  	for a in $(ls -d /var/lib/lxc/*); do cp /sbin/ifconfig $a/rootfs/sbin/; done
 
 
   To copy a non-privileged executable in containers, like *vim* :  
   
    
-  sudo cp /bin/vim ... baptiste
+    	for a in $(ls -d ~/.locale/share/lxc/*); do cp /sbin/ifconfig $a/rootfs/sbin/; done
+
 
 ## Execution
 ### Root version
