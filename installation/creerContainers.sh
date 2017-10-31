@@ -8,11 +8,7 @@ if [ "$UID" -ne "0" ]; then
   echo "Variable \$HOME est : $HOME. Si elle est incorrect, le script ne fonctionnera pas."
   echo "veuillez patienter, le premier container est en cours de de création"
 
-if [ `uname -m | grep 64 | wc -l` = "0" ];then
-  lxc-create -n ordinateur0 -t download -- -d debian -r jessie -a i386 > /dev/null 2> /dev/null
-else
-  lxc-create -n ordinateur0 -t download -- -d debian -r jessie -a amd64 > /dev/null 2> /dev/null
-fi
+  lxc-create -n ordinateur0 -t download -- -d archlinux -r current -a amd64 > /dev/null 2> /dev/null
 
   echo "vos containers sont en cours de création, veuillez patienter..."
 

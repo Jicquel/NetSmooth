@@ -3,7 +3,7 @@
 ## Installation
 ### Required softwares
 
-* Qt version 5.5.1
+* Qt version 5.5.1 or newer
 * LXC (https://linuxcontainers.org/fr/lxc/downloads/)
 * package icu
 * package lxcfs
@@ -29,15 +29,20 @@
 ### Installation for an unprivileged utilisation
 #### WARNING 
 Command with *sudo* **MUST** executed with *sudo*. Command with *su* **MUST** also be executed with *su*.  
+If you don't have the permissions to write in a file, use chmod to change permissions.   
 
-Create the directory ~/.config/lxc if it doesn't exist
+Create the directory ~/.config/lxc if it doesn't exist.
 	
 	mkdir ~/.config/lxc
 	touch ~/.config/lxc/default.conf
-	sudo `whoami` veth lxcbr0 100 >> /etc/lxc/lxc-usernet
-	echo lxc.network.type = veth >> ~/.config/lxc/default.conf
-	echo lxc.id_map = u 0 100000 65536 >> ~/.config/lxc/default.conf
-	echo lxc.id_map = g 0 100000 65536 >> ~/.config/lxc/default.conf
+
+  if ~/.config/lxc/default.conf already existed, **make sure that the following lines are not already written**.  
+
+
+	sudo echo "`whoami` veth lxcbr0 100" >> /etc/lxc/lxc-usernet
+	echo "lxc.network.type = veth" >> ~/.config/lxc/default.conf
+	echo "lxc.id_map = u 0 100000 65536" >> ~/.config/lxc/default.conf
+	echo "lxc.id_map = g 0 100000 65536" >> ~/.config/lxc/default.conf
 	
 Check if everything is enabled with 
 
@@ -46,7 +51,11 @@ if not, you will have to clone or rebuild the kernel.
 
 	
 	
-	sudo chmod -R a+rw /sys/fs/cgroup
+	sudo chmod -R a+rw /sys/fs/cgroup 
+
+  **Make sure that the following lines are not already written**.  
+
+
 	sudo echo `whoami`:100000:65536 >> /etc/subuid   
 	sudo echo `whoami`:100000:65536 >> /etc/subgid
 	
@@ -59,7 +68,7 @@ if not, you will have to clone or rebuild the kernel.
 	sudo chmod u+s /sbin/brctl
 	
 	cd ~/
-	git clone https://github.com/Jicquel/Netsmooth.git   
+	git clone https://github.com/Jicquel/NetSmooth.git   
 	cd ~/NetSmooth/installation/  
 	./creerContainers.sh
 	sudo ./moveScripts.sh
@@ -68,7 +77,7 @@ if not, you will have to clone or rebuild the kernel.
 	qmake  
 	make
 
-The following commands have to be executed at the start of the computer :  
+**The following commands have to be executed at the start of the computer** :  
 
 	sudo chmod -R a+rw /sys/fs/cgroup
 	su
@@ -76,54 +85,26 @@ The following commands have to be executed at the start of the computer :
 	echo 1 > /proc/sys/kernel/unprivileged_userns_clone  
 	exit
 
-## Execution
-### Unprivileged version
+#### Copy an executable in the containers (virtuals machines)
 
-	~/NetSmooth/src/NetSmoothMVC/NetSmooth	
+  If you want to have an executable, for example *ping* or *tcpdump* in a container. You will have to copy it into the file system of the container.  
+                                                       
+  To copy a privileged executable in containers, like *ifconfig* :  
+
+  
+  sudo cp /sbin/ifconfig ... baptiste
+
+
+  To copy a non-privileged executable in containers, like *vim* :  
+
+  
+  sudo cp /bin/vim ... baptiste
+
+## Execution
 ### Root version
 	
 	sudo ~/NetSmooth/src/NetSmoothMVC/NetSmooth	
 
-## Help for LXC's users
-### Containers root
-Containers are by default in the directory /var/lib/lxc/\<container name>  
-The file system is in /var/lib/lxc/\<container name>/rootfs/  
-The configuration file is /var/lib/lxc/\<container name>/config  
-	
-The path "/var/lib/lxc/" is set in /etc/lxc/lxc.conf with lxc.lxcpath=\<path>  
-  
-Configuration file of a container *"ordinateur"* :
+### Unprivileged version
 
-	lxc.include = /usr/share/lxc/config/debian.common.conf
-	lxc.arch = x86
-	lxc.network.type = veth
-	lxc.network.name = eth0
-	lxc.network.flags = up
-	lxc.rootfs = /var/lib/lxc/<container's name>/rootfs
-	lxc.utsname = <container's name>
-
-
-Configuration file of a container *"passerelle"* :
-
-	lxc.include = /usr/share/lxc/config/debian.common.conf
-	lxc.arch = x86
-	lxc.network.type = veth
-	lxc.network.name = eth0
-	lxc.network.flags = up  
-	lxc.network.type = veth
-	lxc.network.name = eth1
-	lxc.network.flags = up  
-	lxc.network.type = veth
-	lxc.network.name = eth2
-	lxc.network.flags = up  
-	lxc.network.type = veth
-	lxc.network.name = eth3
-	lxc.network.flags = up
-	lxc.rootfs = /var/lib/lxc/<container's name>/rootfs
-	lxc.utsname = <container's name>
-
-## Tips
-To connect a container to the internet :
-* set lxc.network.type to "none"
-* start the container
-* copy /etc/resolv.conf of the host host in the /etc/resolv.conf of the container
+	~/NetSmooth/src/NetSmoothMVC/NetSmooth	
