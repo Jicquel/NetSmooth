@@ -92,13 +92,13 @@ if not, you will have to clone or rebuild the kernel.
   To copy a privileged executable in containers, like *ifconfig* :  
    
     
-  	for a in $(ls -d /var/lib/lxc/*); do cp /sbin/ifconfig $a/rootfs/sbin/; done
+  	for a in $(ls -d ~/.local/share/lxc/*); do cp /sbin/ifconfig $a/rootfs/sbin/; done
 
 
   To copy a non-privileged executable in containers, like *vim* :  
   
-   
-    	for a in $(ls -d ~/.locale/share/lxc/*); do cp /sbin/ifconfig $a/rootfs/sbin/; done
+  
+  	sudo for a in $(ls -d ~/.local/share/lxc/*); do cp /bin/vim $a/rootfs/bin/; done
 
 
 ## Execution
